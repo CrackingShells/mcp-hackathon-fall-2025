@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "denso-bcap": {
+      "command": "python",
+      "args": [
+        "-m",
+        "wrs.drivers.orin_bcap.mcp_server"
+      ],
+      "env": {
+        "PYTHONPATH": "C:\\WRSprogram\\wrs_2024\\"
+      }
+    }
+  }
+}
+
