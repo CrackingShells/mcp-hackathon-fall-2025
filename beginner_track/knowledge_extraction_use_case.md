@@ -17,11 +17,17 @@
 
 ## Phase 1: Server Installation (10 min)
 
-### Create environment (using mamba)
+### Create environment
+**using mamba**
 
 ```bash
-mamba create -n forMCPHackathonFall python=3.11
+mamba create -n forMCPHackathonFall python=3.13
 mamba activate forMCPHackathonFall
+```
+**or using uv**
+```bash
+uv venv --python 3.13 forMCPHackathonFall
+source forMCPHackathonFall/bin/activate
 ```
 
 ### Install Paper Search MCP
@@ -31,33 +37,36 @@ mamba activate forMCPHackathonFall
 pip install paper-search-mcp
 ```
 
-**Verify Installation:**
+**Verify Installation by running it**
 ```bash
-python -m paper_search_mcp.server --help
+python -m paper_search_mcp.server
 ```
 
 ### Install ArangoDB MCP Server
 
 ```bash
-# Install the server
 pip install mcp-arangodb-async
-
-# Make a new environment file
-cp env.example .env
-
-# Start ArangoDB container (required for database operations)
-# Using docker-compose (recommended):
-docker-compose --env-file .env arangodb up -d
-
-# Wait 10-15 seconds for container to be healthy
-docker-compose ps
 ```
+**Put our preconfigured .env file in your environment folder**
+The file is called `.env.example`. Rename it to `.env`. 
 
-### Initialize ArangoDB Database
+**Start ArangoDB container (required for database operations)**
+**Using docker run (on Linux, don't forget sudo)**
+```bash
+docker run -d --env-file .env --name mcp_arangodb_test -p 8529:8529 arangodb
+```
+**Wait 10-15 seconds for container to be healthy and check (on Linux, don't forget sudo)**
+```bash
+docker ps
+```
+**You can also now log in with root & the root password in .env**
+http://localhost:8529
+
+### Configure ArangoDB (add our database etc.)
 
 After the container is healthy, initialize the database with a user account:
 
-**For Linux/macOS (Bash):**
+**For Linux/macOS (bash):**
 ```bash
 chmod +x beginner_track/arangodb_util/setup-arango.sh
 ./beginner_track/arangodb_util/setup-arango.sh --seed
@@ -77,8 +86,11 @@ This script:
 ### Verify Setup
 
 ```bash
-# Check health
 python -m mcp_arangodb_async --health
+```
+**or with uv**
+```bash
+uv run -m mcp_arangodb_async --health
 ```
 
 **Expected output:**

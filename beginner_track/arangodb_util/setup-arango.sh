@@ -63,7 +63,7 @@ NC='\033[0m' # No Color
 echo "Configuring ArangoDB (container: mcp_arangodb_test) ..."
 
 # Wait until container is healthy or at least Up
-MAX_TRIES=30
+MAX_TRIES=10
 for ((i=0; i<MAX_TRIES; i++)); do
     STATUS=$(docker ps --filter name=mcp_arangodb_test --format "{{.Status}}" 2>/dev/null || echo "")
     if [[ $STATUS =~ (healthy|Up) ]]; then
@@ -117,7 +117,7 @@ docker cp "$SETUP_JS" mcp_arangodb_test:/tmp/setup-db.js
 
 # Execute database setup
 echo "Creating database and user..."
-docker compose exec -T arangodb arangosh \
+docker exec -t mcp_arangodb_test arangosh \
     --server.username root \
     --server.password "$ROOT_PASSWORD" \
     --javascript.execute /tmp/setup-db.js
@@ -157,7 +157,7 @@ EOF
     echo "Seeding sample data..."
     docker cp "$SEED_JS" mcp_arangodb_test:/tmp/seed.js
 
-    docker compose exec -T arangodb arangosh \
+    docker exec -t mcp_arangodb_test arangosh \
         --server.username root \
         --server.password "$ROOT_PASSWORD" \
         --javascript.execute /tmp/seed.js
